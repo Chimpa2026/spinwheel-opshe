@@ -1,0 +1,19 @@
+{
+  "admin": {
+    "username": "admin",
+    "password_hash": "scrypt:32768:8:1$rjRuBBInFwDwl4pH$1d27e1771ea07a619e279bcafe499e0316061006d13423910f7efb5ceadcc64178d2cddd0d6d14814ae18b03d7f8f67ac788cd01cb3670bf6502e67b116292bc"
+  },
+  "brand": {
+    "logo": null,
+    "handle": "@opshe.id"
+  },
+  "prizes": [
+    "Lipstik Mini",
+    "Diskon 20%",
+    "Voucher 50rb",
+    "Free Skincare Sample",
+    "Coba Lagi",
+    "Grand Prize"
+  ],
+  "history": []
+}

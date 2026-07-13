@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Spin Wheel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="card card-wide">
+    <div class="admin-header">
+      <h2 class="title" style="margin:0; text-align:left;">Dashboard Admin</h2>
+      <div class="who">
+        Halo, <a href="#">{{ session.get('username', 'admin') }}</a> ·
+        <a href="{{ url_for('logout') }}">Keluar</a>
+      </div>
+    </div>
+    <p class="subtitle" style="text-align:left; margin-bottom: 8px;">Atur hadiah &amp; pantau riwayat pemenang spin wheel.</p>
+
+    {% if message %}
+      <div class="msg-box">{{ message }}</div>
+    {% endif %}
+    {% if error %}
+      <div class="error-box">{{ error }}</div>
+    {% endif %}
+
+    <!-- Form utama: brand + hadiah -->
+    <form method="POST" enctype="multipart/form-data" id="wheel-form">
+      <input type="hidden" name="action" value="save_wheel">
+
+      <div class="section-label">Logo Toko</div>
+      <p class="field-hint">Logo ini akan tampil diam di tengah roda (tidak ikut berputar). Format PNG/JPG/WEBP/SVG, maks 5MB.</p>
+
+      <div class="logo-uploader">
+        <div class="logo-preview" id="logo-preview">
+          {% if data.brand.logo %}
+            <img src="{{ url_for('static', filename=data.brand.logo) }}?t={{ range(1,99999)|random }}" alt="Logo toko">
+          {% else %}
+            <span class="logo-preview-empty">Belum ada logo</span>
+          {% endif %}
+        </div>
+        <div class="logo-uploader-actions">
+          <label for="logo" class="btn btn-ghost logo-upload-btn">Pilih File Logo</label>
+          <input type="file" id="logo" name="logo" accept=".png,.jpg,.jpeg,.webp,.svg" style="display:none;">
+          <span id="logo-filename" class="field-hint" style="margin:6px 0 0;"></span>
+          {% if data.brand.logo %}
+          <label class="checkbox-row">
+            <input type="checkbox" name="remove_logo" value="1"> Hapus logo saat ini
+          </label>
+          {% endif %}
+        </div>
+      </div>
+
+      <label for="brand_handle">Instagram / Handle (opsional, tampil di bawah logo)</label>
+      <input type="text" id="brand_handle" name="brand_handle" value="{{ data.brand.handle }}" maxlength="24">
+
+      <div class="section-label" style="display:flex; align-items:center; justify-content:space-between;">
+        <span>Panel Hadiah <span id="prize-count">({{ data.prizes|length }}/{{ max_prizes }})</span></span>
+      </div>
+      <p class="field-hint">Minimal {{ min_prizes }}, maksimal {{ max_prizes }} panel.</p>
+
+      <div class="prize-list" id="prize-list"></div>
+
+      <button type="button" id="add-prize-btn" class="btn btn-ghost" style="width:100%; margin-top:12px;">+ Tambah Panel</button>
+
+      <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+    </form>
+
+    <hr class="divider">
+
+    <!-- Riwayat pemenang -->
+    <div class="section-label" style="margin-top:0;">Riwayat Pemenang ({{ data.history|length }})</div>
+    <div class="history-scroll">
+      {% if data.history %}
+      <table class="history-table">
+        <thead>
+          <tr><th>Waktu</th><th>Hadiah</th></tr>
+        </thead>
+        <tbody>
+          {% for h in data.history %}
+          <tr>
+            <td>{{ h.time }}</td>
+            <td>{{ h.prize }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div class="history-empty">Belum ada yang spin.</div>
+      {% endif %}
+    </div>
+
+    <div class="row-actions">
+      <form method="POST" onsubmit="return confirm('Hapus semua riwayat pemenang?');">
+        <input type="hidden" name="action" value="clear_history">
+        <button type="submit" class="btn btn-danger">Hapus Riwayat</button>
+      </form>
+      <a href="{{ url_for('wheel') }}" target="_blank" class="btn btn-ghost" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">Lihat Halaman Spin</a>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Ganti password -->
+    <div class="section-label" style="margin-top:0;">Ganti Password</div>
+    <form method="POST">
+      <input type="hidden" name="action" value="change_password">
+      <label for="new_password">Password Baru</label>
+      <input type="password" id="new_password" name="new_password" minlength="6" required>
+      <label for="confirm_password">Konfirmasi Password</label>
+      <input type="password" id="confirm_password" name="confirm_password" minlength="6" required>
+      <button type="submit" class="btn btn-ghost" style="width:100%; margin-top:16px;">Ganti Password</button>
+    </form>
+  </div>
+
+  <script>
+    window.INITIAL_PRIZES = {{ data.prizes|tojson }};
+    window.MIN_PRIZES = {{ min_prizes }};
+    window.MAX_PRIZES = {{ max_prizes }};
+    window.WHEEL_COLORS = ["#b98ae0","#e0399a","#f5b98a","#7fdcc4","#f6d878","#f6c9de","#8ad0e0","#f2a6c7","#ffcf9e","#d9b3f0"];
+  </script>
+  <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>

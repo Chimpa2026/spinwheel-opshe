@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Admin - Spin Wheel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="card">
+    <div class="brand-badge">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C10 6 6 8 4 8c0 5 3.5 9 8 12 4.5-3 8-7 8-12-2 0-6-2-8-6z" fill="#fff"/>
+      </svg>
+    </div>
+    <h1 class="title">Login Admin</h1>
+    <p class="subtitle">Masuk untuk atur hadiah spin wheel</p>
+
+    {% if error %}
+      <div class="error-box">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="admin" required autofocus>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="••••••••" required>
+
+      <button type="submit" class="btn btn-primary">Masuk</button>
+    </form>
+
+    <div class="footer-link">
+      <a href="{{ url_for('wheel') }}">&larr; Kembali ke halaman spin</a>
+    </div>
+  </div>
+</body>
+</html>
